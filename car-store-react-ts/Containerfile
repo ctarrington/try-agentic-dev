@@ -1,0 +1,36 @@
+# Stage 1 — install deps in the official Node image (avoids apt-get in Chrome image)
+FROM node:lts-slim AS build
+
+# Store the Cypress binary inside the project so stage 2 picks it up via COPY
+ENV CYPRESS_CACHE_FOLDER=/build/.cypress-cache
+
+WORKDIR /build
+
+COPY package*.json ./
+RUN npm ci
+
+COPY index.html vite.config.ts tsconfig*.json eslint.config.js cypress.config.ts ./
+COPY src/ ./src/
+COPY public/ ./public/
+COPY cypress/ ./cypress/
+
+# Stage 2 — Chrome image with Node.js copied in (no apt-get needed)
+FROM lscr.io/linuxserver/chrome
+
+COPY --from=build /usr/local/bin/node          /usr/local/bin/node
+COPY --from=build /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+ && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
+ENV CYPRESS_CACHE_FOLDER=/app/.cypress-cache
+
+WORKDIR /app
+COPY --from=build /build ./
+
+# test-output is volume-mounted at runtime; pre-create dirs so the mount point exists
+RUN mkdir -p test-output/snapshots test-output/diff
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

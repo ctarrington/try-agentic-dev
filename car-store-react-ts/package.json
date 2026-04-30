@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "cy:podman": "bash run-tests.sh"
   },
   "dependencies": {
     "react": "^19.2.5",
