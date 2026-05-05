@@ -11,7 +11,7 @@
     "cy:open": "cypress open",
     "cy:build": "podman build --storage-opt ignore_chown_errors=true -t car-store-cypress .",
     "cy:run": "podman run --rm --network host -v $PWD/cypress:/app/cypress:Z -v $PWD/cypress.config.ts:/app/cypress.config.ts:Z -v $PWD/tsconfig.json:/app/tsconfig.json:Z -v $PWD/tsconfig.app.json:/app/tsconfig.app.json:Z -v $PWD/tsconfig.node.json:/app/tsconfig.node.json:Z -v $PWD/test-output:/app/test-output:Z car-store-cypress",
-    "cy:podman": "npm run cy:build && npm run cy:run",
+    "cy:podman": "npm run cy:build && npm run cy:run"
   },
   "dependencies": {
     "react": "^19.2.5",
