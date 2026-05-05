@@ -9,9 +9,8 @@ WORKDIR /build
 COPY package*.json ./
 RUN npm ci
 
-COPY index.html vite.config.ts tsconfig*.json eslint.config.js cypress.config.ts ./
-COPY src/ ./src/
-COPY public/ ./public/
+# Only test files needed — the app runs on the host, not inside the container
+COPY tsconfig*.json cypress.config.ts ./
 COPY cypress/ ./cypress/
 
 # Stage 2 — Chrome image with Node.js copied in (no apt-get needed)

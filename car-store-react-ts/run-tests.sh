@@ -8,6 +8,8 @@ podman build \
   -t "$IMAGE" \
   "$DIR"
 
+# --network host lets the container reach the dev server running on the host
 podman run --rm \
+  --network host \
   -v "$DIR/test-output:/app/test-output:Z" \
   "$IMAGE"
